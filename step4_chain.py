@@ -2,19 +2,23 @@ import os
 import json
 from openai import OpenAI
 from dotenv import load_dotenv
+import httpx
+
 
 load_dotenv()
 
 client = OpenAI(
     api_key=os.getenv("DEEPSEEK_API_KEY"),
-    base_url="https://api.deepseek.com"
+    base_url="https://api.deepseek.com",
+    http_client=httpx.Client(trust_env=False)
 )
 
 def call_llm(prompt):
     response = client.chat.completions.create(
         model="deepseek-chat",
         messages=[{"role": "user", "content": prompt}],
-        response_format={"type": "json_object"}  #强制模型只输出合法 JSON
+        response_format={"type": "json_object"} #强制模型只输出合法 JSON
+        
     )
     return response.choices[0].message.content
 
