@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from step4_chain import converge_goal, generate_route
+from step8_rag import rag_answer
 
 app = Flask(__name__)
 
@@ -11,5 +12,12 @@ def generate():
     route = generate_route(goal)
     return jsonify(route)
 
+@app.route("/ask", methods=["POST"])
+def ask():
+    data = request.get_json()
+    question = data["question"]
+    answer = rag_answer(question)
+    return jsonify({"answer": answer})
+    
 if __name__ == "__main__":
     app.run(debug=True)
