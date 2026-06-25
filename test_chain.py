@@ -29,3 +29,18 @@ def test_generate_route_dirty_return():
     with patch.object(step4_chain, "call_llm", return_value=dirty_return):
         with pytest.raises(json.JSONDecodeError):
             step4_chain.generate_route({"目标方向": "RAG"})
+
+def test_generate_route_too_few_stages():
+    # 准备一段“合法 JSON、但只有 2 个阶段”的假返回（违反 3-6 约束）
+    # 注意：这是真正的 JSON 数组，能被 json.loads 正常解析，不会崩
+    too_few = json.dumps([
+        {"阶段序号": 1, "主题": "A", "具体内容": "x", "阶段时长": "1周", "下一步指引": "先做x"},
+        {"阶段序号": 2, "主题": "B", "具体内容": "y", "阶段时长": "1周", "下一步指引": "再做y"}
+    ], ensure_ascii=False)
+
+    # 喂给 generate_route，看它怎么处理
+    with patch.object(step4_chain, "call_llm", return_value=too_few):
+        result = step4_chain.generate_route({"目标方向": "RAG"})
+
+    # 现状记录：代码没有校验阶段数，所以 2 个会被原样收下
+    assert len(result["阶段列表"]) == 2
