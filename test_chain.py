@@ -42,3 +42,24 @@ def test_generate_route_too_few_stages():
     # 现状已改变：加了校验后，2个阶段会被拦下，返回空列表 + error 字段
     assert result["阶段列表"] == []          # 阶段列表被清空
     assert "error" in result                 # 返回里带了 error 字段
+
+def test_generate_route_retry_success():
+    # 第一次返回2个阶段(不合规)，第二次返回4个阶段(合规)
+    bad = json.dumps([
+        {"阶段序号": 1, "主题": "A", "具体内容": "x", "阶段时长": "1周", "下一步指引": "做x"},
+        {"阶段序号": 2, "主题": "B", "具体内容": "y", "阶段时长": "1周", "下一步指引": "做y"}
+    ], ensure_ascii=False)
+    good = json.dumps([
+        {"阶段序号": 1, "主题": "A", "具体内容": "x", "阶段时长": "1周", "下一步指引": "做x"},
+        {"阶段序号": 2, "主题": "B", "具体内容": "y", "阶段时长": "1周", "下一步指引": "做y"},
+        {"阶段序号": 3, "主题": "C", "具体内容": "z", "阶段时长": "1周", "下一步指引": "做z"},
+        {"阶段序号": 4, "主题": "D", "具体内容": "w", "阶段时长": "1周", "下一步指引": "做w"}
+    ], ensure_ascii=False)
+
+    # side_effect：第一次调用返回 bad，第二次返回 good
+    with patch.object(step4_chain, "call_llm", side_effect=[bad, good]):
+        result = step4_chain.generate_route({"目标方向": "RAG"})
+
+    # 预期：重试后拿到合规的4个阶段，没有 error
+    assert len(result["阶段列表"]) == 4
+    assert "error" not in result
