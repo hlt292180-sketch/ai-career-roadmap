@@ -40,6 +40,9 @@ def generate_route(goal_json):
 其它/兜底 → 均衡（基础+实战兼顾）），阶段数范围（3-6个阶段）（阶段数由你按时长定），阶段时长要对齐总时间（各阶段时长加起来不超过用户的时间约束。），下一步指引的调性（用减压、鼓励的口吻，只给最小起步动作，不要罗列一堆任务。），只输出 JSON（不要多余的话、不要 ```json 包裹）"""   # ← 这里填你动作③的路线生成 prompt
     raw = call_llm(prompt)
     arr = json.loads(raw)
+    # 新增：校验阶段数是否在 3-6 范围内
+    if not (3 <= len(arr) <= 6):
+        return {"阶段列表": [], "error": f"阶段数不符合要求（应为3-6，实际{len(arr)}）"}
     return {"阶段列表": arr}
 
 if __name__ == "__main__":

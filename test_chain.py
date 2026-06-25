@@ -3,23 +3,20 @@ import json
 import step4_chain   # 导入整个模块，方便等下替换它里面的 call_llm
 import pytest
 def test_generate_route_normal():
-    # 1. 准备一段“假装是大模型返回”的 JSON 字符串（正常情况）
+    # 1. 准备一段“假装是大模型返回”的 JSON 字符串（正常情况：4个阶段，符合3-6）
     fake_llm_return = json.dumps([
-        {"阶段序号": 1, "主题": "Python基础", "具体内容": "语法",
-         "阶段时长": "1周", "下一步指引": "先写个小脚本"}
+        {"阶段序号": 1, "主题": "Python基础", "具体内容": "语法", "阶段时长": "1周", "下一步指引": "先写个小脚本"},
+        {"阶段序号": 2, "主题": "Flask入门", "具体内容": "接口", "阶段时长": "1周", "下一步指引": "搭个hello world"},
+        {"阶段序号": 3, "主题": "调大模型API", "具体内容": "对接", "阶段时长": "1周", "下一步指引": "先调通一次"},
+        {"阶段序号": 4, "主题": "做个小项目", "具体内容": "整合", "阶段时长": "1周", "下一步指引": "拼起来跑通"}
     ], ensure_ascii=False)
 
-    # 2. 用 patch 把 step4_chain 里的 call_llm 临时替换掉：
-    #    不管传什么 prompt，都直接返回上面那段假字符串，不真调 API
     with patch.object(step4_chain, "call_llm", return_value=fake_llm_return):
         result = step4_chain.generate_route({"目标方向": "RAG"})
 
-    # 3. 验证那三条“确定性质”
-    assert "阶段列表" in result              # 有“阶段列表”字段
-    assert isinstance(result["阶段列表"], list)   # 它是个 list
-    assert len(result["阶段列表"]) > 0        # 非空
-
-
+    assert "阶段列表" in result
+    assert isinstance(result["阶段列表"], list)
+    assert len(result["阶段列表"]) > 0
 
 def test_generate_route_dirty_return():
     # 准备一段“脏”的假返回——根本不是合法 JSON
@@ -42,5 +39,6 @@ def test_generate_route_too_few_stages():
     with patch.object(step4_chain, "call_llm", return_value=too_few):
         result = step4_chain.generate_route({"目标方向": "RAG"})
 
-    # 现状记录：代码没有校验阶段数，所以 2 个会被原样收下
-    assert len(result["阶段列表"]) == 2
+    # 现状已改变：加了校验后，2个阶段会被拦下，返回空列表 + error 字段
+    assert result["阶段列表"] == []          # 阶段列表被清空
+    assert "error" in result                 # 返回里带了 error 字段
