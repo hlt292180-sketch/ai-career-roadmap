@@ -36,7 +36,7 @@
 - 伪 RAG（全量知识库塞 prompt）→ 验证"有据才答"机制可靠
 - 朴素检索（字符重合度假 embedding）→ 验证检索管线
 - 真 RAG（检索 + 生成）接入 Flask，跑通端到端
-- **eval 关键发现**：假 embedding 不懂语义、只看字符重合，同义不同词时检索失败 → 已换真 embedding（DeepSeek Embedding API）
+- **eval 关键发现**：假 embedding 不懂语义、只看字符重合，同义不同词时检索失败 → 已换真 embedding（GLM Embedding API）
 
 ### 第 3 周：测试体系 🔄
 - ✅ 动作①：pytest 单元测试入门（`test_retrieve.py`：`fake_score` 边界 + `retrieve` 合法性）
