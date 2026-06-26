@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS 
 from step4_chain import converge_goal, generate_route
 from step8_rag import rag_answer
 
+
 app = Flask(__name__)
+CORS(app)  
 
 @app.route("/generate", methods=["POST"])
 def generate():
