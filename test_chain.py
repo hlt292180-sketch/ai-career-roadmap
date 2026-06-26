@@ -65,19 +65,3 @@ def test_generate_route_retry_success():
     assert "error" not in result
 
 
-def generate_route_exam(route):
-    arr = route["阶段列表"]
-
-    # 规则一：阶段数 3-6，不在范围就 return False
-    if not (3 <= len(arr) <= 6): 
-        return False
-
-    # 规则二：每个阶段都得有这五个字段
-    ziduan = ["阶段序号", "主题", "具体内容", "阶段时长", "下一步指引"]
-    for i in arr:
-        for k in ziduan:
-            if k not in i:
-                return False
-
-    # 两条都过了
-    return True

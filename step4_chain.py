@@ -76,11 +76,21 @@ if __name__ == "__main__":
         "做了两年测试,想转开发,时间紧",
     ]
 
+    results = []                    # 循环前：准备一个空列表装结果
+
     for user_input in inputs:
         print("=" * 40)
         print("原始输入:", user_input)
-        goal = converge_goal(user_input)
-        route = generate_route(goal)
-        是否合格 = generate_route_exam(route)        # 自动判断这条过没过
-        print("是否合格:", 是否合格)
-        print("路线:", route)
+        try:
+            goal = converge_goal(user_input)
+            route = generate_route(goal)
+            是否合格 = generate_route_exam(route)
+            print("是否合格:", 是否合格)
+            print("路线:", route)
+        except Exception as e:
+            print("这条崩了:", e)
+            是否合格 = False          # 崩了就算失败
+        results.append(是否合格)       # 不管过没过、崩没崩，都记一笔
+    print(f"总共:{len(results)}条")
+    print(f"通过了{results.count(True)}条")
+    print(f"失败了{len(results) - results.count(True)}条")
