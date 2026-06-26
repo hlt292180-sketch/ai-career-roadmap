@@ -49,9 +49,38 @@ def generate_route(goal_json):
     # 循环跑完 3 次还没返回，说明 3 次都不合规，放弃
     return {"阶段列表": [], "error": f"重试{max_retries}次后阶段数仍不符合要求"}
 
+
+def generate_route_exam(route):
+    arr = route["阶段列表"]
+
+    # 规则一：阶段数 3-6，不在范围就 return False
+    if not (3 <= len(arr) <= 6): 
+        return False
+
+    # 规则二：每个阶段都得有这五个字段
+    ziduan = ["阶段序号", "主题", "具体内容", "阶段时长", "下一步指引"]
+    for i in arr:
+        for k in ziduan:
+            if k not in i:
+                return False
+
+    # 两条都过了
+    return True
+    
 if __name__ == "__main__":
-    user_input = "我是应届软件工程毕业生,想转AI应用开发,只想先就业"
-    goal = converge_goal(user_input)
-    print("收敛结果:", goal)
-    route = generate_route(goal)
-    print("路线:", route)
+    inputs = [
+        "我是应届软件工程毕业生,想转AI应用开发,只想先就业",
+        "我是会计,想转数据分析,有半年时间",
+        "零基础想学Python做自动化办公,业余学",
+        "前端工程师想补后端能力,想系统转全栈",
+        "做了两年测试,想转开发,时间紧",
+    ]
+
+    for user_input in inputs:
+        print("=" * 40)
+        print("原始输入:", user_input)
+        goal = converge_goal(user_input)
+        route = generate_route(goal)
+        是否合格 = generate_route_exam(route)        # 自动判断这条过没过
+        print("是否合格:", 是否合格)
+        print("路线:", route)
