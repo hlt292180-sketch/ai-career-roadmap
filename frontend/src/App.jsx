@@ -204,7 +204,7 @@ function App() {
           {/* 空状态 */}
           {!loading && !error && !route && !hasSearched && (
             <div className="empty-state">
-              <div className="empty-icon">🌌</div>
+              <div className="empty-icon">🧭</div>
               <p>
                 在上方输入你的职业现状和目标
                 <br />

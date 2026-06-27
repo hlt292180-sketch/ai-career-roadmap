@@ -1,100 +1,70 @@
-/* ===== 星图主题：全局 CSS 变量 ===== */
+/* ===== 简洁亮色 SaaS 主题：全局 CSS 变量 ===== */
 :root {
-  /* 深空底色系 */
-  --bg-deep: #080c18;
-  --bg-elevated: #0f1425;
-  --bg-card: rgba(18, 24, 45, 0.75);
+  /* 底色系（浅） */
+  --bg-page: #f7f8fa;        /* 页面底，极浅灰 */
+  --bg-card: #ffffff;        /* 卡片纯白 */
+  --bg-subtle: #f1f2f5;      /* 浅灰填充（输入框/标签底） */
+  --bg-hover: #f4f5f8;       /* hover 浅灰 */
 
-  /* 暖金点缀系 */
-  --gold: #e2b04a;
-  --gold-light: #f0c860;
-  --gold-dim: #b08a30;
-  --gold-glow: rgba(226, 176, 74, 0.25);
+  /* 主色：克制的靛蓝 */
+  --accent: #5b5bd6;
+  --accent-hover: #4b4bc4;   /* hover 加深 */
+  --accent-soft: #eeeefb;    /* 靛蓝极浅底（徽章/高亮块） */
+  --accent-ring: rgba(91, 91, 214, 0.18);  /* 聚焦环 */
 
   /* 文字层级 */
-  --text-primary: #e8e4f0;
-  --text-secondary: #a8a4b8;
-  --text-muted: #6a6680;
+  --text-primary: #18181b;   /* 近黑标题 */
+  --text-secondary: #52525b; /* 中灰正文 */
+  --text-muted: #9498a3;     /* 浅灰辅助 */
 
   /* 功能色 */
-  --error: #e05555;
-  --error-bg: rgba(224, 85, 85, 0.12);
-  --success: #5abb7a;
+  --error: #d92d20;
+  --error-bg: #fef3f2;
+  --error-border: #fecdca;
 
   /* 边框 / 分割 */
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(226, 176, 74, 0.3);
+  --border: #e7e8ec;         /* 标准细边框 */
+  --border-strong: #d6d8de;  /* 略深边框 */
 
   /* 排版 */
-  --font-display: 'Noto Serif SC', 'SimSun', serif;
-  --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+  --font-body: 'Plus Jakarta Sans', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
 
   /* 圆角 */
   --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
 
-  /* 阴影 */
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
-  --shadow-glow: 0 0 32px rgba(226, 176, 74, 0.15);
+  /* 阴影（柔和、分层） */
+  --shadow-xs: 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow-md: 0 4px 12px rgba(16, 24, 40, 0.06), 0 2px 4px rgba(16, 24, 40, 0.04);
+  --shadow-lg: 0 12px 28px rgba(16, 24, 40, 0.08), 0 4px 8px rgba(16, 24, 40, 0.04);
 
-  font: 16px/1.6 var(--font-body);
+  font: 15px/1.6 var(--font-body);
   color: var(--text-secondary);
-  background: var(--bg-deep);
+  background: var(--bg-page);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ===== 星空背景（纯 CSS 三层星点叠加） ===== */
+/* ===== 页面底：纯净浅色 + 极淡靛蓝点阵增加质感 ===== */
 body {
   margin: 0;
   min-height: 100vh;
   background:
-    /* 第三层：稀疏大星（更亮） */
-    radial-gradient(1.5px 1.5px at 10% 15%, rgba(255, 255, 255, 0.6), transparent),
-    radial-gradient(1.5px 1.5px at 25% 8%, rgba(255, 255, 255, 0.5), transparent),
-    radial-gradient(1.5px 1.5px at 50% 20%, rgba(255, 255, 255, 0.7), transparent),
-    radial-gradient(1.5px 1.5px at 70% 12%, rgba(255, 255, 255, 0.55), transparent),
-    radial-gradient(1.5px 1.5px at 85% 22%, rgba(255, 255, 255, 0.6), transparent),
-    radial-gradient(1.5px 1.5px at 15% 35%, rgba(255, 255, 255, 0.5), transparent),
-    radial-gradient(1.5px 1.5px at 60% 40%, rgba(255, 255, 255, 0.45), transparent),
-    radial-gradient(1.5px 1.5px at 90% 55%, rgba(255, 255, 255, 0.55), transparent),
-    radial-gradient(1.5px 1.5px at 35% 65%, rgba(255, 255, 255, 0.5), transparent),
-    radial-gradient(1.5px 1.5px at 75% 70%, rgba(255, 255, 255, 0.6), transparent),
-    /* 第二层：密集中星 */
-    radial-gradient(1px 1px at 5% 5%, rgba(200, 210, 255, 0.5), transparent),
-    radial-gradient(1px 1px at 20% 25%, rgba(200, 210, 255, 0.4), transparent),
-    radial-gradient(1px 1px at 40% 5%, rgba(200, 210, 255, 0.45), transparent),
-    radial-gradient(1px 1px at 65% 18%, rgba(200, 210, 255, 0.4), transparent),
-    radial-gradient(1px 1px at 80% 35%, rgba(200, 210, 255, 0.5), transparent),
-    radial-gradient(1px 1px at 12% 50%, rgba(200, 210, 255, 0.4), transparent),
-    radial-gradient(1px 1px at 45% 30%, rgba(200, 210, 255, 0.35), transparent),
-    radial-gradient(1px 1px at 55% 55%, rgba(200, 210, 255, 0.45), transparent),
-    radial-gradient(1px 1px at 95% 15%, rgba(200, 210, 255, 0.4), transparent),
-    radial-gradient(1px 1px at 30% 80%, rgba(200, 210, 255, 0.4), transparent),
-    /* 第一层：细微星尘 */
-    radial-gradient(0.5px 0.5px at 8% 10%, rgba(255, 255, 255, 0.35), transparent),
-    radial-gradient(0.5px 0.5px at 33% 3%, rgba(255, 255, 255, 0.3), transparent),
-    radial-gradient(0.5px 0.5px at 58% 28%, rgba(255, 255, 255, 0.35), transparent),
-    radial-gradient(0.5px 0.5px at 72% 8%, rgba(255, 255, 255, 0.3), transparent),
-    radial-gradient(0.5px 0.5px at 88% 45%, rgba(255, 255, 255, 0.35), transparent),
-    radial-gradient(0.5px 0.5px at 18% 72%, rgba(255, 255, 255, 0.3), transparent),
-    radial-gradient(0.5px 0.5px at 42% 85%, rgba(255, 255, 255, 0.35), transparent),
-    radial-gradient(0.5px 0.5px at 68% 60%, rgba(255, 255, 255, 0.3), transparent),
-    /* 星云光晕：底部一抹暖金色暗光 */
-    radial-gradient(ellipse 600px 300px at 50% 100%, rgba(226, 176, 74, 0.04), transparent),
-    /* 星云光晕：顶部一抹蓝紫色暗光 */
-    radial-gradient(ellipse 500px 250px at 30% 0%, rgba(100, 130, 220, 0.05), transparent),
-    var(--bg-deep);
+    radial-gradient(circle at 1px 1px, rgba(91, 91, 214, 0.05) 1px, transparent 0)
+      0 0 / 22px 22px,
+    var(--bg-page);
   background-attachment: fixed;
 }
 
 /* ===== 根容器 ===== */
 #root {
   width: 100%;
-  max-width: 720px;
+  max-width: 680px;
   margin: 0 auto;
-  padding: 48px 24px 80px;
+  padding: 56px 24px 96px;
   box-sizing: border-box;
   min-height: 100vh;
 }
@@ -107,19 +77,21 @@ h1, h2, h3, h4 {
 }
 
 h1 {
-  font-size: 2.25rem;
+  font-size: 2rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.02em;   /* 现代无衬线收紧字距 */
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 h3 {
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 p {
@@ -127,23 +99,24 @@ p {
   line-height: 1.7;
 }
 
-/* ===== 滚动条美化 ===== */
+/* ===== 滚动条（浅色） ===== */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-deep);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+  background: #d8dae0;
+  border-radius: 4px;
+  border: 2px solid var(--bg-page);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: #c2c5cd;
 }
 
-/* ===== 选中文字颜色 ===== */
+/* ===== 选中文字 ===== */
 ::selection {
-  background: var(--gold-glow);
-  color: var(--text-primary);
+  background: var(--accent-soft);
+  color: var(--accent-hover);
 }
