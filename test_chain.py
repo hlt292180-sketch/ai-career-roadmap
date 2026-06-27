@@ -68,3 +68,20 @@ def test_generate_route_retry_success():
     assert "error" not in result
 
 
+def test_generate_route_missing_field():
+    # 阶段数合规(4个)，但每个阶段都缺了"具体内容"字段——以前只查阶段数会放行，
+    # 现在接入 generate_route_exam 后，字段不全也应被拦下、重试 3 次后返回兜底。
+    missing = json.dumps([
+        {"阶段序号": 1, "主题": "A", "阶段时长": "1周", "下一步指引": "做x"},
+        {"阶段序号": 2, "主题": "B", "阶段时长": "1周", "下一步指引": "做y"},
+        {"阶段序号": 3, "主题": "C", "阶段时长": "1周", "下一步指引": "做z"},
+        {"阶段序号": 4, "主题": "D", "阶段时长": "1周", "下一步指引": "做w"}
+    ], ensure_ascii=False)
+
+    with patch.object(step4_chain, "call_llm", return_value=missing):
+        result = step4_chain.generate_route({"目标方向": "RAG"})
+
+    assert result["阶段列表"] == []     # 字段缺失被拦，3 次都不过
+    assert "error" in result            # 返回兜底结构
+
+

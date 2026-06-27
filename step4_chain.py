@@ -55,12 +55,14 @@ def generate_route(goal_json, context=""):
             arr = json.loads(raw)          # 尝试解析
         except json.JSONDecodeError:
             continue                       # 解析失败：跳过这次，进入下一轮重试
-        if 3 <= len(arr) <= 6:
-            return {"阶段列表": arr}
-        
+        candidate = {"阶段列表": arr}
+        # 用 generate_route_exam 同时校验：阶段数 3-6 + 每个阶段五个字段都齐全
+        # （之前这里只查阶段数，导致缺"具体内容"等字段的脏路线会漏到前端）
+        if generate_route_exam(candidate):
+            return candidate
 
     # 循环跑完 3 次还没返回，说明 3 次都不合规，放弃
-    return {"阶段列表": [], "error": f"重试{max_retries}次后阶段数仍不符合要求"}
+    return {"阶段列表": [], "error": f"重试{max_retries}次后路线仍不合规（阶段数不对或字段缺失）"}
 
 
 def generate_route_exam(route):

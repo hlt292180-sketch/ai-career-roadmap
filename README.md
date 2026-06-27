@@ -34,12 +34,13 @@
 
 ### 第 2 周：RAG 接入 ✅
 - 伪 RAG（全量知识库塞 prompt）→ 验证"有据才答"机制可靠
-- 朴素检索（字符重合度假 embedding）→ 验证检索管线
+- 朴素检索（字符重合度假 embedding）→ 先跑通检索管线
 - 真 RAG（检索 + 生成）接入 Flask，跑通端到端
-- **eval 关键发现**：假 embedding 不懂语义、只看字符重合，同义不同词时检索失败——这是"为什么必须换真 embedding"的直接证据（当前仍用假 embedding，真 embedding 待接入）
+- **已升级为智谱 `embedding-3` 真向量检索**：余弦相似度排序，知识库向量懒加载预计算
+- **eval 关键发现**：假 embedding 只看字符重合、不懂语义，同义不同词就检索失败；换真 embedding 后，"怎么选大模型API" 能命中 "大模型 API 怎么选" 这类同义不同词的片段——这就是"换之前 vs 换之后"的实证
 
 ### 第 3 周：测试体系 🔄
-- ✅ 动作①：pytest 单元测试入门（`test_retrieve.py`：`fake_score` 边界 + `retrieve` 合法性）
+- ✅ 动作①：pytest 单元测试入门（`test_retrieve.py`：`cosine_sim` 纯函数 + `retrieve` mock 隔离不联网）
 - ✅ 动作②：理解 LLM 输出怎么测（规则校验 > 精确匹配）
 - ✅ 动作③：`generate_route_exam()` 自动化结构校验——阶段数 3-6 + 五个必填字段名校验
 - ✅ 动作④：批量执行 5 条输入 + 自动统计通过/失败 + `try/except` 防单条崩溃拖垮整批
@@ -60,8 +61,8 @@
 
 用 **pytest** 给核心函数写自动化测试，覆盖正常路径、边界情况和异常路径：
 
-- **纯函数测试**：`fake_score` 的边界（空字符串、重复字符）、`retrieve` 的返回数量和合法性
-- **Mock 隔离 LLM**：用 `unittest.mock.patch` 替换 `call_llm`，不花 API 钱、不受网络波动影响
+- **纯函数测试**：`cosine_sim` 的边界（同向/垂直/反向）、`retrieve` 的返回数量和合法性
+- **Mock 隔离外部 API**：用 `unittest.mock.patch` 替换 `call_llm` 和 `embed`，测试不花 API 钱、不联网、不受网络波动影响
 - **结构校验**：`generate_route_exam()` 自动检查每个输出的阶段数和字段名是否符合规范
 - **批量验证**：5 条典型用户输入批量跑，自动统计通过率
 - **重试机制**：阶段数不合规时自动重试（上限 3 次），`test_generate_route_retry_success` 验证重试生效
@@ -90,7 +91,7 @@ pytest test_chain.py test_retrieve.py -v
 大切小/
 ├── app.py                # Flask 服务器（/generate、/ask）
 ├── step4_chain.py        # 核心链式编排（converge_goal → generate_route）
-├── step7_retrieve.py     # 朴素检索（字符重合度假 embedding）
+├── step7_retrieve.py     # 向量检索（智谱 embedding-3 + 余弦相似度，懒加载）
 ├── step8_rag.py          # 真 RAG 问答（检索 + LLM 生成）
 ├── step6_rag.py          # 伪 RAG（全量知识库直塞 prompt）
 ├── knowledge.py          # 知识库（6 条 AI 转型入门知识）
@@ -134,7 +135,7 @@ cd frontend && npm install && npm run dev
 
 - 阶段时长之和超总时长约束（数值校验）
 - 坏 JSON 根因根治（prompt / 后处理层面）
-- 假 embedding → 真 embedding 迁移
+- 知识库扩容 + 检索质量量化评估（命中率 / MRR）
 - React 前端与 Flask 联调优化
 
 ---
