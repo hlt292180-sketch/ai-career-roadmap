@@ -44,10 +44,13 @@ def generate_route(goal_json):
     max_retries = 3   # 最多试 3 次，防止模型一直不听话导致死循环
     for attempt in range(max_retries):
         raw = call_llm(prompt)
-        arr = json.loads(raw)
+        try:
+            arr = json.loads(raw)          # 尝试解析
+        except json.JSONDecodeError:
+            continue                       # 解析失败：跳过这次，进入下一轮重试
         if 3 <= len(arr) <= 6:
-            return {"阶段列表": arr}   # 合规，直接返回，不再重试
-        # 不合规：什么都不做，循环会自动进入下一次重试
+            return {"阶段列表": arr}
+        
 
     # 循环跑完 3 次还没返回，说明 3 次都不合规，放弃
     return {"阶段列表": [], "error": f"重试{max_retries}次后阶段数仍不符合要求"}

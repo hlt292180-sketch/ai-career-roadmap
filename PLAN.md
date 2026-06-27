@@ -48,7 +48,7 @@
 
 RAG 跑起来后，observe 它哪里不可靠（检索捞错段？答非所问？），记进 PLAN.md——这又是第3周 eval 的真实弹药，也是面试讲"我发现了 RAG 哪里不靠谱"的料。
 
-**动作⑤ eval 发现记录：**
+**动作⑤ eval 发现记录：** ✅ 已完成
 
 1. **编码坑**：PowerShell 发中文请求变问号，需用 UTF-8 字节 + `charset=utf-8` 才能正确传递中文。这是 Windows 环境下 Flask API 调用的实际踩坑。
 
