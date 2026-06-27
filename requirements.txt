@@ -1,0 +1,10 @@
+# 后端依赖（Python 3.8+）
+# 安装：pip install -r requirements.txt
+
+Flask==3.0.3           # Web 框架，提供 /generate 和 /ask 接口
+Flask-Cors==5.0.0      # 允许前端跨域请求后端
+openai==2.2.0          # 统一 SDK：同时调 DeepSeek（生成）和智谱（embedding）
+python-dotenv==1.0.1   # 从 .env 读取 API Key
+numpy==1.24.4          # 向量余弦相似度计算
+httpx==0.28.1          # HTTP 客户端，配 trust_env=False 绕过代理干扰
+pytest==8.3.5          # 单元测试框架

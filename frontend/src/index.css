@@ -1,111 +1,149 @@
+/* ===== 星图主题：全局 CSS 变量 ===== */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  /* 深空底色系 */
+  --bg-deep: #080c18;
+  --bg-elevated: #0f1425;
+  --bg-card: rgba(18, 24, 45, 0.75);
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  /* 暖金点缀系 */
+  --gold: #e2b04a;
+  --gold-light: #f0c860;
+  --gold-dim: #b08a30;
+  --gold-glow: rgba(226, 176, 74, 0.25);
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+  /* 文字层级 */
+  --text-primary: #e8e4f0;
+  --text-secondary: #a8a4b8;
+  --text-muted: #6a6680;
+
+  /* 功能色 */
+  --error: #e05555;
+  --error-bg: rgba(224, 85, 85, 0.12);
+  --success: #5abb7a;
+
+  /* 边框 / 分割 */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(226, 176, 74, 0.3);
+
+  /* 排版 */
+  --font-display: 'Noto Serif SC', 'SimSun', serif;
+  --font-body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+  /* 圆角 */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+
+  /* 阴影 */
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 32px rgba(226, 176, 74, 0.15);
+
+  font: 16px/1.6 var(--font-body);
+  color: var(--text-secondary);
+  background: var(--bg-deep);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
+/* ===== 星空背景（纯 CSS 三层星点叠加） ===== */
 body {
   margin: 0;
+  min-height: 100vh;
+  background:
+    /* 第三层：稀疏大星（更亮） */
+    radial-gradient(1.5px 1.5px at 10% 15%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 25% 8%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 50% 20%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1.5px 1.5px at 70% 12%, rgba(255, 255, 255, 0.55), transparent),
+    radial-gradient(1.5px 1.5px at 85% 22%, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 15% 35%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 60% 40%, rgba(255, 255, 255, 0.45), transparent),
+    radial-gradient(1.5px 1.5px at 90% 55%, rgba(255, 255, 255, 0.55), transparent),
+    radial-gradient(1.5px 1.5px at 35% 65%, rgba(255, 255, 255, 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 75% 70%, rgba(255, 255, 255, 0.6), transparent),
+    /* 第二层：密集中星 */
+    radial-gradient(1px 1px at 5% 5%, rgba(200, 210, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 20% 25%, rgba(200, 210, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 40% 5%, rgba(200, 210, 255, 0.45), transparent),
+    radial-gradient(1px 1px at 65% 18%, rgba(200, 210, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 80% 35%, rgba(200, 210, 255, 0.5), transparent),
+    radial-gradient(1px 1px at 12% 50%, rgba(200, 210, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 45% 30%, rgba(200, 210, 255, 0.35), transparent),
+    radial-gradient(1px 1px at 55% 55%, rgba(200, 210, 255, 0.45), transparent),
+    radial-gradient(1px 1px at 95% 15%, rgba(200, 210, 255, 0.4), transparent),
+    radial-gradient(1px 1px at 30% 80%, rgba(200, 210, 255, 0.4), transparent),
+    /* 第一层：细微星尘 */
+    radial-gradient(0.5px 0.5px at 8% 10%, rgba(255, 255, 255, 0.35), transparent),
+    radial-gradient(0.5px 0.5px at 33% 3%, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(0.5px 0.5px at 58% 28%, rgba(255, 255, 255, 0.35), transparent),
+    radial-gradient(0.5px 0.5px at 72% 8%, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(0.5px 0.5px at 88% 45%, rgba(255, 255, 255, 0.35), transparent),
+    radial-gradient(0.5px 0.5px at 18% 72%, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(0.5px 0.5px at 42% 85%, rgba(255, 255, 255, 0.35), transparent),
+    radial-gradient(0.5px 0.5px at 68% 60%, rgba(255, 255, 255, 0.3), transparent),
+    /* 星云光晕：底部一抹暖金色暗光 */
+    radial-gradient(ellipse 600px 300px at 50% 100%, rgba(226, 176, 74, 0.04), transparent),
+    /* 星云光晕：顶部一抹蓝紫色暗光 */
+    radial-gradient(ellipse 500px 250px at 30% 0%, rgba(100, 130, 220, 0.05), transparent),
+    var(--bg-deep);
+  background-attachment: fixed;
 }
 
+/* ===== 根容器 ===== */
 #root {
-  width: 1126px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 720px;
   margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
+  padding: 48px 24px 80px;
   box-sizing: border-box;
+  min-height: 100vh;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+/* ===== 排版 ===== */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  color: var(--text-primary);
+  margin: 0;
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
+
 h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
+  font-size: 1.5rem;
+  font-weight: 600;
 }
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
 p {
   margin: 0;
+  line-height: 1.7;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+/* ===== 滚动条美化 ===== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+/* ===== 选中文字颜色 ===== */
+::selection {
+  background: var(--gold-glow);
+  color: var(--text-primary);
 }

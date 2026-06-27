@@ -22,10 +22,13 @@ def test_generate_route_dirty_return():
     # 准备一段“脏”的假返回——根本不是合法 JSON
     dirty_return = "好的，这是你的学习路线：（然后模型忘了输出JSON）"
 
-    # 预期：喂脏数据时，json.loads 会抛 JSONDecodeError
+    # 现状已改变：generate_route 内部用 try/except 兜住了 JSONDecodeError，
+    # 不再向外抛异常，而是重试 3 次后返回兜底结构（空列表 + error 字段）。
     with patch.object(step4_chain, "call_llm", return_value=dirty_return):
-        with pytest.raises(json.JSONDecodeError):
-            step4_chain.generate_route({"目标方向": "RAG"})
+        result = step4_chain.generate_route({"目标方向": "RAG"})
+
+    assert result["阶段列表"] == []     # 脏数据 3 次都解析失败 → 空列表
+    assert "error" in result            # 返回里带 error 字段说明走了兜底
 
 def test_generate_route_too_few_stages():
     # 准备一段“合法 JSON、但只有 2 个阶段”的假返回（违反 3-6 约束）

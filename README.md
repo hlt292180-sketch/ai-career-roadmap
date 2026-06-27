@@ -4,7 +4,7 @@
 
 输入一句模糊的职业转型想法（如"我是应届生，想转 AI 应用开发"），先收敛为结构化目标，再生成 3-6 个阶段的可执行学习路线——每阶段带具体知识点和"下一步该做什么"的指引。
 
-**技术栈**：Python · Flask · DeepSeek API（`deepseek-chat`）· pytest
+**技术栈**：Python · Flask · DeepSeek API（`deepseek-chat`）· React 19 + Vite · pytest
 
 ---
 
@@ -36,7 +36,7 @@
 - 伪 RAG（全量知识库塞 prompt）→ 验证"有据才答"机制可靠
 - 朴素检索（字符重合度假 embedding）→ 验证检索管线
 - 真 RAG（检索 + 生成）接入 Flask，跑通端到端
-- **eval 关键发现**：假 embedding 不懂语义、只看字符重合，同义不同词时检索失败 → 已换真 embedding（GLM Embedding API）
+- **eval 关键发现**：假 embedding 不懂语义、只看字符重合，同义不同词时检索失败——这是"为什么必须换真 embedding"的直接证据（当前仍用假 embedding，真 embedding 待接入）
 
 ### 第 3 周：测试体系 🔄
 - ✅ 动作①：pytest 单元测试入门（`test_retrieve.py`：`fake_score` 边界 + `retrieve` 合法性）
@@ -44,6 +44,13 @@
 - ✅ 动作③：`generate_route_exam()` 自动化结构校验——阶段数 3-6 + 五个必填字段名校验
 - ✅ 动作④：批量执行 5 条输入 + 自动统计通过/失败 + `try/except` 防单条崩溃拖垮整批
 - 🔄 动作⑤：整理 README + 求职材料
+
+### 第 4 周：React 前端 🔄
+- ✅ 前端美化：**「星图」主题**——深空蓝黑底色 + 暖金点缀，纯 CSS 星空粒子背景
+- ✅ 玻璃质感输入卡片 + 金色渐变按钮（hover 发光、loading 脉冲）
+- ✅ 阶段时间线：左侧金色竖线 + 节点圆点，卡片交错入场动画
+- ✅ 完整状态覆盖：空状态引导 → 加载骨架屏 → 路线展示 → 错误提示
+- 🔄 与 Flask API 对接调试
 
 ---
 
@@ -69,11 +76,11 @@ pytest test_chain.py test_retrieve.py -v
 
 这些不是"我猜可能会出问题"，而是代码自动校验真跑出来的：
 
-| # | 发现 |
-|---|------|
-| 1 | 模型字段名中英文不统一——常吐 `stage`/`topic` 而非中文五字段，导致校验不通过 |
-| 2 | `converge_goal` 疑似没把 `user_input` 拼进 prompt，不同输入收敛结果雷同 |
-| 3 | 模型偶发吐非法 JSON（缺逗号、引号不配对），`json.loads` 直接崩溃 |
+| # | 发现 | 状态 |
+|---|------|------|
+| 1 | 模型字段名中英文不统一——常吐 `stage`/`topic` 而非中文五字段，导致校验不通过 | ✅ 已修复（prompt 钉死中文 key） |
+| 2 | `converge_goal` 疑似没把 `user_input` 拼进 prompt，不同输入收敛结果雷同 | ✅ 已修复（拼接逻辑已修正） |
+| 3 | 模型偶发吐非法 JSON（缺逗号、引号不配对），`json.loads` 直接崩溃 | 🔄 已用 try/except 兜住，根因待根治 |
 
 ---
 
@@ -89,6 +96,10 @@ pytest test_chain.py test_retrieve.py -v
 ├── knowledge.py          # 知识库（6 条 AI 转型入门知识）
 ├── test_chain.py         # 链式编排 pytest 测试（4 个 case）
 ├── test_retrieve.py      # 检索模块 pytest 测试（2 个 case）
+├── frontend/             # React 前端（Vite + React 19，「星图」主题）
+│   ├── src/App.jsx       # 主组件（输入/加载/时间线/错误四态）
+│   ├── src/App.css       # 组件样式（玻璃卡片/时间线/骨架屏动画）
+│   └── src/index.css     # 全局主题 + 星空粒子背景
 ├── plan.md               # 开发计划 + 已知问题追踪
 ├── .env                  # DeepSeek API Key（已 gitignore）
 └── .gitignore
@@ -99,33 +110,32 @@ pytest test_chain.py test_retrieve.py -v
 ## 快速开始
 
 ```bash
-# 1. 安装依赖
-pip install flask openai pytest
+# 1. 安装 Python 依赖
+pip install flask openai pytest flask-cors
 
 # 2. 配置 API Key（.env 文件）
 DEEPSEEK_API_KEY=你的key
 DEEPSEEK_BASE_URL=https://api.deepseek.com
 
-# 3. 启动 Flask
+# 3. 启动 Flask 后端
 python app.py
 
-# 4. 调用接口
-curl -X POST http://localhost:5000/generate \
-  -H "Content-Type: application/json; charset=utf-8" \
-  -d '{"user_input": "我想从Java后端转AI应用开发，有3个月时间"}'
+# 4. 启动 React 前端（新终端）
+cd frontend && npm install && npm run dev
+
+# 5. 浏览器打开前端地址（默认 http://localhost:5173）
 ```
 
 ---
 
 ## 已知待办
 
-详见 [plan.md](plan.md)，当前 14 条待调优项中重点：
+详见 [plan.md](plan.md)，当前 15 条待调优项中重点：
 
 - 阶段时长之和超总时长约束（数值校验）
-- `converge_goal` user_input 拼接排查
-- prompt 钉死中文字段名防止漂移
 - 坏 JSON 根因根治（prompt / 后处理层面）
-- 前端（React）尚未启动
+- 假 embedding → 真 embedding 迁移
+- React 前端与 Flask 联调优化
 
 ---
 
